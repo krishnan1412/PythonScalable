@@ -38,12 +38,15 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'Docker_Cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([
+                    sshuserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY'),
+                    usernamePassword(credentialsId: 'Docker_Cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}"
                         sh """
-                        echo ${DOCKER_PASS} | sudo docker login -u ${DOCKER_USER} --password-stdin
-                        sudo docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                        ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
+                        'echo ${DOCKER_PASS} | sudo docker login -u ${DOCKER_USER} --password-stdin && \
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
+                        sudo docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
                         """
                     }
                 }
