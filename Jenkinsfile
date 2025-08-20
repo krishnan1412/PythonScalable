@@ -29,7 +29,7 @@ pipeline {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
-                    'cd PythonScalable && docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                    'cd PythonScalable && sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                     """
                     }
                 }
@@ -42,8 +42,8 @@ pipeline {
                     script {
                         sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}"
                         sh """
-                        echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
-                        docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                        echo ${DOCKER_PASS} | sudo docker login -u ${DOCKER_USER} --password-stdin
+                        sudo docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}
                         """
                     }
                 }
@@ -56,10 +56,10 @@ pipeline {
                     script {
                         sh """
                         ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
-                            'docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
-                            docker stop python-app || true && \
-                            docker rm python-app || true && \
-                            docker run -d --name python-app -p 80:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
+                            'sudo docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
+                            sudo docker stop python-app || true && \
+                            sudo docker rm python-app || true && \
+                            sudo docker run -d --name python-app -p 80:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
                         """
                     }
                 }
