@@ -17,7 +17,8 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
                 'rm -rf PythonScalable && \
                 git clone https://github.com/krishnan1412/PythonScalable.git && \
-                cd PythonScalable'
+                cd PythonScalable
+                '
                 """
                 }
             }
@@ -28,7 +29,8 @@ pipeline {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
-                    'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                    'cd PythonScalable \
+                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                     """
                     }
                 }
