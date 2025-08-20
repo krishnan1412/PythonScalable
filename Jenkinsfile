@@ -10,10 +10,25 @@ pipeline {
     }
 
     stages {
+        stage("login to ssh and clone the git repo") {
+            steps {
+                sh """
+                ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP}'
+                rm -rf PythonScalable &&
+                git clone https://github.com/krishnan1412/PythonScalable.git &&
+                cd PythonScalable
+                '
+                """
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP}'
+                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                    '
+                    """
                 }
             }
         }
@@ -38,9 +53,6 @@ pipeline {
                     script {
                         sh """
                         ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} '
-                            rm -rf PythonScalable &&
-                            git clone https://github.com/krishnan1412/PythonScalable.git &&
-                            cd PythonScalable &&
                             docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} &&
                             docker stop python-app || true &&
                             docker rm python-app || true &&
