@@ -45,7 +45,7 @@ pipeline {
                         sh """
                         ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
                         'echo ${DOCKER_PASS} | sudo docker login -u ${DOCKER_USER} --password-stdin && \
-                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
+                        sudo docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
                         sudo docker push ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
                         """
                     }
