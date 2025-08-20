@@ -62,7 +62,7 @@ pipeline {
                             'sudo docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
                             sudo docker stop python-app || true && \
                             sudo docker rm python-app || true && \
-                            sudo docker run -d --name python-app -p 80:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
+                            sudo docker run -d --name python-app -p 5000:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
                         """
                     }
                 }
