@@ -29,8 +29,7 @@ pipeline {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
-                    'cd PythonScalable \
-                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                    'cd PythonScalable && docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                     """
                     }
                 }
