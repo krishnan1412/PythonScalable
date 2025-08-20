@@ -14,11 +14,10 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY')]) {
                 sh """
-                ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} <<<EOF
-                rm -rf PythonScalable &&
-                git clone https://github.com/krishnan1412/PythonScalable.git &&
-                cd PythonScalable
-                EOF
+                ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
+                'rm -rf PythonScalable && \
+                git clone https://github.com/krishnan1412/PythonScalable.git && \
+                cd PythonScalable'
                 """
                 }
             }
@@ -28,9 +27,8 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY')]) {
                 script {
                     sh """
-                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} <<<EOF
-                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                    EOF
+                    ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
+                    'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
                     """
                     }
                 }
@@ -56,12 +54,11 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY')]) {
                     script {
                         sh """
-                        ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} <<<EOF
-                            docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} &&
-                            docker stop python-app || true &&
-                            docker rm python-app || true &&
-                            docker run -d --name python-app -p 80:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                        EOF
+                        ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP} \
+                            'docker pull ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG} && \
+                            docker stop python-app || true && \
+                            docker rm python-app || true && \
+                            docker run -d --name python-app -p 80:5000 ${DOCKERHUB_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}'
                         """
                     }
                 }
