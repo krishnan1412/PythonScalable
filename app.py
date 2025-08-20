@@ -6,7 +6,7 @@ counter = 0
 
 # Configure logging to file
 logging.basicConfig(
-    filename='logs/app.log',
+    filename='app.log',
     level=logging.INFO,
     format='%(asctime)s %(levelname)s: %(message)s'
 )
