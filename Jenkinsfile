@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "python-scalable-app"
         DOCKER_TAG = "latest"
-        DOCKERHUB_USER = "krishnan14"
+        DOCKERHUB_USER = "krishnan27roman@gmail.com"
         SERVER_USER = "ubuntu"
         SERVER_IP = "54.180.124.46"
     }
