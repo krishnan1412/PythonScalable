@@ -39,7 +39,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([
-                    sshuserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY'),
+                    sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY'),
                     usernamePassword(credentialsId: 'Docker_Cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
                         sh """
