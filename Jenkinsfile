@@ -12,6 +12,7 @@ pipeline {
     stages {
         stage("login to ssh and clone the git repo") {
             steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY')]) {
                 sh """
                 ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP}'
                 rm -rf PythonScalable &&
@@ -19,16 +20,19 @@ pipeline {
                 cd PythonScalable
                 '
                 """
+                }
             }
         }
         stage('Build Docker Image') {
             steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_ID', keyFileVariable: 'EC2_KEY')]) {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${EC2_KEY} ${SERVER_USER}@${SERVER_IP}'
                     docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                     '
                     """
+                    }
                 }
             }
         }
